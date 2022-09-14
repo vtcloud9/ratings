@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Http;
+using st = System.Text.Json;
 
 namespace Ratings
 {
@@ -97,6 +98,23 @@ namespace Ratings
 
             return new OkObjectResult(responseMessage);
         }
+
+        [FunctionName("GetRating")]
+        public static async Task<IActionResult> getRating(
+    [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+    ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a get request.");
+
+            string ratingId = req.Query["ratingId"];
+
+            var returnValue = await CosmosHelper.Container.ReadItemAsync<InitialPayload>(ratingId, new Microsoft.Azure.Cosmos.PartitionKey(ratingId));
+
+            var serializedValue = st.JsonSerializer.Serialize(returnValue.Resource);
+
+            return new OkObjectResult(serializedValue);
+        }
+
 
         //https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/calling-a-web-api-from-a-net-client
         //

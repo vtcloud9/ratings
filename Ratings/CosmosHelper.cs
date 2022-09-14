@@ -35,7 +35,7 @@ namespace Ratings
             {
                 if (_cosmosClient == null)
                 {
-                    _cosmosClient = new CosmosClient("https://serverlessopenhackmwm.documents.azure.com:443/", CosmosKey, new CosmosClientOptions());
+                    _cosmosClient = new CosmosClient("https://t3-cosmos-db-account.documents.azure.com:443/", CosmosKey, new CosmosClientOptions());
                 }
                 return _cosmosClient;
             }
@@ -46,7 +46,7 @@ namespace Ratings
             {
                 if (_database == null)
                 {
-                    _database = CosmosClient.GetDatabase("ratingsDb");
+                    _database = CosmosClient.GetDatabase("icratinghk3db");
                 }
                 return _database;
             }
@@ -57,7 +57,7 @@ namespace Ratings
             {
                 if (_container == null)
                 {
-                    _container = Database.GetContainer("ratings");
+                    _container = Database.GetContainer("icratingcontainer");
                 }
                 return _container;
             }
@@ -69,7 +69,7 @@ namespace Ratings
             {
                 if (_cosmosKey == null)
                 {
-                    _cosmosKey = config["cosmosconnection"];
+                    _cosmosKey = config["cosmoskey"];
                 }
                 return _cosmosKey;
             }
