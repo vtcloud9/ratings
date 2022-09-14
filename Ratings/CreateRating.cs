@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Http;
 using st = System.Text.Json;
+using System.Collections.Generic;
+using Microsoft.Azure.Cosmos;
 
 namespace Ratings
 {
@@ -115,6 +117,33 @@ namespace Ratings
             return new OkObjectResult(serializedValue);
         }
 
+        [FunctionName("GetRatings")]
+        public static async Task<IActionResult> getRatings(
+    [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+    ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a get request.");
+
+            string userId = req.Query["userId"];
+            List<InitialPayload> allRatings = new List<InitialPayload>();
+
+
+            var query = $"Select * from c where c.userId = '{userId}'";
+
+            QueryDefinition queryDefinition = new QueryDefinition(query);
+
+            var returnValue = CosmosHelper.Container.GetItemQueryIterator<InitialPayload>(queryDefinition);
+
+            while (returnValue.HasMoreResults)
+            {
+                var result = await returnValue.ReadNextAsync();
+                allRatings.AddRange(result.Resource);
+            }
+
+            var serializedValue = st.JsonSerializer.Serialize(allRatings);
+
+            return new OkObjectResult(serializedValue);
+        }
 
         //https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/calling-a-web-api-from-a-net-client
         //
