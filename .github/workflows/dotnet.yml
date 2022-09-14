@@ -1,4 +1,6 @@
 name: .NET
+env:
+    AZURE_FUNCTIONAPP_PACKAGE_PATH: './Ratings' # set this to the path to your web app project, defaults to the repository root
 
 on:
   push:
@@ -7,6 +9,7 @@ on:
     branches: [ "master" ]
 
 jobs:
+  
   build:
 
     runs-on: windows-latest
